@@ -1,0 +1,26 @@
+{
+  "michael":  {
+    "bold": true
+  },
+  "pam": {
+    "font": "Comic Sans MS"
+  },
+  "jim": {
+    "italic": true
+  },
+  "dwight": {
+    "underline": true
+  },
+  "ryan": {
+    "font": "Consolas"
+  },
+  "kevin": {
+    "font": "Syncopate"
+  },
+  "andy": {
+    "font": "Playfair Display SC"
+  },
+  "stanley": {
+    "font": "Impact"
+  }
+}
