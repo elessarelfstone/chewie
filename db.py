@@ -1,37 +1,48 @@
+import os
+from os.path import expanduser
+from typing import List, Dict
 
 import sqlalchemy as sa
-from sqlalchemy import Column, String, Integer, JSON, Enum
-
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Integer, JSON
 from sqlalchemy.orm import Session
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql.expression import func
 
-from settings import DB_HOST, DB_BASE, DB_LOGIN, DB_PASS
+from settings import DB_FPATH
 
-Base = declarative_base()
+meta = sa.MetaData()
+Base = declarative_base(metadata=meta)
 
 
-class Talk(Base):
-    __tablename__ = "talk"
-    id = Column(Integer, primary_key=True)
-    body = Column(String(2000))
-    talk_type = Column(String(1))
+class Transcript(Base):
+    __tablename__ = "transcript"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    transcript = Column(String(5000), nullable=False)
+    is_monolog = Column(Integer)
     meta = Column(JSON)
 
 
-def create_engine():
-    return sa.create_engine('mysql+pymysql://{}:{}@{}/{}'.format(DB_LOGIN, DB_PASS, DB_HOST, DB_BASE))
+def create_sqlite_engine():
+    """ Make engine to connect sqlite"""
+    return sa.create_engine('sqlite:///{}'.format(DB_FPATH),
+                            connect_args={'check_same_thread': False})
 
 
-def upload_talks(talks):
-    engine = create_engine()
-    meta = sa.MetaData()
+def upload_transcripts(transcripts: List[Dict]):
+    """ Upload list of dicts to sqlite """
+    engine = create_sqlite_engine()
     session = Session(bind=engine)
-    session.bulk_insert_mappings(Talk, talks)
+    session.bulk_insert_mappings(Transcript, transcripts)
     session.commit()
 
 
+def load_random_transcript(movie=None):
+    """ Load from sqlite transcript"""
+    engine = create_sqlite_engine()
+    session = Session(bind=engine)
+    row = session.query(Transcript).order_by(func.random()).first()
+    if not row:
+        return 'No transcripts'
 
-
-
-
+    return row.transcript
 

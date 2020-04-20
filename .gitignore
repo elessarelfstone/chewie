@@ -18,6 +18,7 @@ __pycache__/
 
 # DB
 tabix/
+db/
 
 # Architecture
 architecture/

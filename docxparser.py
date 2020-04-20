@@ -2,22 +2,17 @@ import os
 import enum
 
 from itertools import groupby
-from typing import List, Any
+from typing import List, Any, Dict
 
 from docx import Document
 from docx.text.paragraph import Paragraph
 
-from db import upload_talks
+from db import upload_transcripts
 from settings import DEFAULT_FONT, CHARACTER_STYLE_TEMPALTE
 from utils import find_character, load_characters_styles
 
 
-class TalkType(enum.Enum):
-    dialog = 'd'
-    monolog = 'm'
-
-
-def transcript_parts(fpath):
+def transcript_parts(fpath: str) -> List:
     """ Break docx document into parts(paragraph objects)
         which are separated by empty line(s).
     """
@@ -65,7 +60,7 @@ def underline(par: Paragraph) -> bool:
     return underlines[0] if len(underlines) else None
 
 
-def style(par: Paragraph):
+def style(par: Paragraph) -> Dict:
     """ Return style for paragraph as json"""
     d = dict()
     # _d =
@@ -89,39 +84,39 @@ def parse_movie(fpath: str) -> str:
     return '_'.join(t).lower()
 
 
-def parse_talks(fpath: str) -> List[Any]:
-    """ Return dict of talks"""
-    talks = transcript_parts(fpath)
-    _talks = []
+def parse_transcripts(fpath: str) -> List[Any]:
+    """ Return dict of transcripts"""
+    transcripts = transcript_parts(fpath)
+    _transcripts = []
     # meta = dict(movie=parse_movie(fpath))
-    for talk in talks:
+    for transcript in transcripts:
         meta = dict(movie=parse_movie(fpath))
 
         # if we have only line in talk
-        if len(talk) == 1:
-            line = talk[0]
+        if len(transcript) == 1:
+            line = transcript[0]
 
-            # it can be monolog of character
+            # if it's just one single phrase
             if style(line) == dict(font=DEFAULT_FONT):
-                d = dict(meta=meta, body=monolog(line.text), talk_type='m')
+                d = dict(meta=meta, transcript=monolog(line.text))
             else:
-                # or just one phrase
+                # or it's monolog to the camera
                 meta.update(dict(style=style(line)))
-                d = dict(meta=meta, body=monolog(line.text), talk_type='d')
+                d = dict(meta=meta, transcript=monolog(line.text), is_monolog=1)
         else:
             # build dialog
-            d = dict(meta=meta, body=dialog([p.text for p in talk]), talk_type='d')
+            d = dict(meta=meta, transcript=dialog([p.text for p in transcript]))
 
-        _talks.append(d)
+        _transcripts.append(d)
 
-    return _talks
+    return _transcripts
 
 
 def dialog(lines: List[str]):
     return '\n'.join([' - {}'.format(line) for line in lines])
 
 
-def monolog(line: str):
+def monolog(line: str) -> str:
     return ' - {}'.format(line)
 
 

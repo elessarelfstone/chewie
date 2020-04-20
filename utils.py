@@ -12,6 +12,7 @@ def read_file(fpath):
 
 
 def load_characters_styles(movie):
+    """ Load """
     data = read_file(os.path.join(
         os.path.dirname(os.path.abspath(__file__)), 'characters', '{}.json'.format(movie))
     )
@@ -19,7 +20,8 @@ def load_characters_styles(movie):
     return json.loads(data)
 
 
-def find_character(ch_obj: dict, styles: dict):
+def find_character(ch_obj: dict, styles: dict) -> str:
+
     # chs = load_characters_styles()
     for k, v in styles.items():
         _d = {**CHARACTER_STYLE_TEMPALTE, **v}
@@ -27,5 +29,5 @@ def find_character(ch_obj: dict, styles: dict):
             return k
 
 
-def fpath(fname):
+def temp_fpath(fname):
     return os.path.join(TEMP_DIR, fname)
