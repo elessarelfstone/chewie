@@ -19,7 +19,7 @@ def load_characters_styles(movie):
     return json.loads(data)
 
 
-def find_charcter(ch_obj: dict, styles: dict):
+def find_character(ch_obj: dict, styles: dict):
     # chs = load_characters_styles()
     for k, v in styles.items():
         _d = {**CHARACTER_STYLE_TEMPALTE, **v}

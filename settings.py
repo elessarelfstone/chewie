@@ -12,3 +12,9 @@ TEMP_DIR = os.getenv('TEMP_DIR')
 DEFAULT_FONT = 'Arial'
 CHARACTER_STYLE_TEMPALTE = {'font': DEFAULT_FONT, 'bold': False, 'italic': False, 'underline': False}
 
+DB_HOST = os.getenv('DB_HOST')
+DB_LOGIN = os.getenv('DB_LOGIN')
+DB_PASS = os.getenv('DB_PASS')
+DB_BASE = os.getenv('DB_BASE')
+
+

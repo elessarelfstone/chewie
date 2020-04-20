@@ -4,7 +4,8 @@ from docx import Document
 from docx.text.paragraph import Paragraph
 
 from settings import DEFAULT_FONT, CHARACTER_STYLE_TEMPALTE
-from utils import find_charcter, load_characters_styles
+from utils import find_character, load_characters_styles
+
 
 def transcript_parts(fpath):
     """ Break docx document into parts(paragraph objects)
@@ -75,10 +76,10 @@ def show_styles(parts):
     chs = load_characters_styles('the_office')
     for p in parts:
         if len(p) == 1:
-            print(style(p[0]), '>>>>', find_charcter(style(p[0]), chs))
+            print(style(p[0]), '>>>>', find_character(style(p[0]), chs))
 
 
-show_styles(transcript_parts('C:\\Users\\elessar\\Documents\\The Office S03E8 - The Merger.docx'))
+show_styles(transcript_parts('C:\\Users\\elessar\\Documents\\The Office S03E7 - Branch closing.docx'))
 
 
     # print(parts)

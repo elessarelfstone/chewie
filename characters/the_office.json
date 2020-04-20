@@ -22,5 +22,29 @@
   },
   "stanley": {
     "font": "Impact"
+  },
+  "angela": {
+    "font": "Abril Fatface"
+  },
+  "kelly": {
+    "font": "Pacifico"
+  },
+  "roy": {
+    "font": "Josefin Sans"
+  },
+  "karen": {
+    "font": "Architects Daughter"
+  },
+  "oscar": {
+    "font": "Corsiva"
+  },
+  "creed": {
+    "font": "Coming soon"
+  },
+  "toby": {
+    "font": "Kaushan Script"
+  },
+  "meredith": {
+    "font": "Boogaloo"
   }
 }
