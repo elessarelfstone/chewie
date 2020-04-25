@@ -69,7 +69,26 @@ def style(par: Paragraph):
     if underline(par):
         d['underline'] = True
 
-    return {**CHARACTER_STYLE_TEMPALTE, **d}
+    return d
+
+    # return {**CHARACTER_STYLE_TEMPALTE, **d}
+
+
+def process(fpath):
+    speechs = transcript_parts(fpath)
+
+    _speechs = []
+
+    for sp in speechs:
+        if len(sp) == 1:
+            _sp = sp.pop()
+            if style(_sp) == dict(font=DEFAULT_FONT):
+                _speechs.append(tuple([_sp, '']))
+            _speechs.append(tuple([sp[0].text, style(sp[0])]))
+        else:
+            _speechs.append(tuple(['/n'.join(p.text for p in sp), '']))
+
+    return _speechs
 
 
 def show_styles(parts):
@@ -79,9 +98,13 @@ def show_styles(parts):
             print(style(p[0]), '>>>>', find_character(style(p[0]), chs))
 
 
-show_styles(transcript_parts('C:\\Users\\elessar\\Documents\\The Office S03E7 - Branch closing.docx'))
+# show_styles(transcript_parts('C:\\Users\\elessar\\Documents\\The Office S03E7 - Branch closing.docx'))
 
 
     # print(parts)
 
 # docx_parse("c:\\Users\\elessar\\michael.docx")
+
+
+sps = process('C:\\Users\\elessar\\Documents\\The Office S03E7 - Branch closing.docx')
+print(sps)

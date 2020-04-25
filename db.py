@@ -20,9 +20,16 @@ def create_engine():
     return sa.create_engine('mysql://{}:{}@{}/{}'.format(DB_LOGIN, DB_PASS, DB_HOST, DB_BASE))
 
 
-def upload_dialogs(rows):
+def upload_dialogs(dialogs):
     engine = create_engine()
     meta = sa.MetaData()
+
+    session = Session(bind=engine)
+    session.bulk_save_objects(dialogs)
+    session.commit()
+
+
+
 
 
 
