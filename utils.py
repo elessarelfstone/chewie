@@ -1,7 +1,7 @@
 import json
 import os
 
-from settings import CHARACTER_STYLE_TEMPALTE
+from settings import CHARACTER_STYLE_TEMPALTE, TEMP_DIR
 
 
 def read_file(fpath):
@@ -25,3 +25,7 @@ def find_character(ch_obj: dict, styles: dict):
         _d = {**CHARACTER_STYLE_TEMPALTE, **v}
         if _d == ch_obj:
             return k
+
+
+def fpath(fname):
+    return os.path.join(TEMP_DIR, fname)

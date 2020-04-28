@@ -1,10 +1,20 @@
+import os
+import enum
+
 from itertools import groupby
+from typing import List, Any
 
 from docx import Document
 from docx.text.paragraph import Paragraph
 
+from db import upload_talks
 from settings import DEFAULT_FONT, CHARACTER_STYLE_TEMPALTE
 from utils import find_character, load_characters_styles
+
+
+class TalkType(enum.Enum):
+    dialog = 'd'
+    monolog = 'm'
 
 
 def transcript_parts(fpath):
@@ -71,24 +81,48 @@ def style(par: Paragraph):
 
     return d
 
-    # return {**CHARACTER_STYLE_TEMPALTE, **d}
+
+def parse_movie(fpath: str) -> str:
+    fname = os.path.basename(fpath)
+    t = fname.split('-')[0]
+    t = t.split(' ')[:-1]
+    return '_'.join(t).lower()
 
 
-def process(fpath):
-    speechs = transcript_parts(fpath)
+def parse_talks(fpath: str) -> List[Any]:
+    """ Return dict of talks"""
+    talks = transcript_parts(fpath)
+    _talks = []
+    # meta = dict(movie=parse_movie(fpath))
+    for talk in talks:
+        meta = dict(movie=parse_movie(fpath))
 
-    _speechs = []
+        # if we have only line in talk
+        if len(talk) == 1:
+            line = talk[0]
 
-    for sp in speechs:
-        if len(sp) == 1:
-            _sp = sp.pop()
-            if style(_sp) == dict(font=DEFAULT_FONT):
-                _speechs.append(tuple([_sp, '']))
-            _speechs.append(tuple([sp[0].text, style(sp[0])]))
+            # it can be monolog of character
+            if style(line) == dict(font=DEFAULT_FONT):
+                d = dict(meta=meta, body=monolog(line.text), talk_type='m')
+            else:
+                # or just one phrase
+                meta.update(dict(style=style(line)))
+                d = dict(meta=meta, body=monolog(line.text), talk_type='d')
         else:
-            _speechs.append(tuple(['/n'.join(p.text for p in sp), '']))
+            # build dialog
+            d = dict(meta=meta, body=dialog([p.text for p in talk]), talk_type='d')
 
-    return _speechs
+        _talks.append(d)
+
+    return _talks
+
+
+def dialog(lines: List[str]):
+    return '\n'.join([' - {}'.format(line) for line in lines])
+
+
+def monolog(line: str):
+    return ' - {}'.format(line)
 
 
 def show_styles(parts):
@@ -97,14 +131,3 @@ def show_styles(parts):
         if len(p) == 1:
             print(style(p[0]), '>>>>', find_character(style(p[0]), chs))
 
-
-# show_styles(transcript_parts('C:\\Users\\elessar\\Documents\\The Office S03E7 - Branch closing.docx'))
-
-
-    # print(parts)
-
-# docx_parse("c:\\Users\\elessar\\michael.docx")
-
-
-sps = process('C:\\Users\\elessar\\Documents\\The Office S03E7 - Branch closing.docx')
-print(sps)
