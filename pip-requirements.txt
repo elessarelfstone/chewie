@@ -6,7 +6,7 @@ cryptography==2.8
 decorator==4.4.2
 future==0.18.2
 idna==2.9
-lxml==4.5.0
+lxml==4.6.3
 pycparser==2.20
 PyMySQL==0.9.3
 python-docx==0.8.10
